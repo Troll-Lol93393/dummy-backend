@@ -1,18 +1,11 @@
-// src/index.ts
-import express, { Request, Response } from 'express';
-import client from './config/database'; 
+import dotenv from "dotenv";
+import { app } from "./app";
 
-const app = express();
-const port = 3000;
+// https://www.youtube.com/watch?v=QoLqMDSBZAs
 
-app.get('/', async (req: Request, res: Response) => {
-  try {
-    const result = await client.query('SELECT NOW()');
-    res.send(`Server time is: ${result.rows[0].now}`);
-  } catch (err) {
-    console.error('Error running query:', err);
-    res.status(500).send('Internal Server Error');
-  }
+const port = process.env.APP_PORT || 4000;
+dotenv.config({
+  path: "./.env",
 });
 
 app.listen(port, () => {
