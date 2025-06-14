@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { app } from "./app";
+import sequelize from "./config/databse";
 
 // https://www.youtube.com/watch?v=QoLqMDSBZAs
 
@@ -8,6 +9,15 @@ dotenv.config({
   path: "./.env",
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
-});
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database connected successfully.");
+
+    app.listen(port, () => {
+      console.log(`🚀 Server is running on http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error("❌ Unable to connect to the database:", error);
+  }
+})();
