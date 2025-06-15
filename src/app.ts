@@ -18,8 +18,10 @@ app.use(cookieParser());
 
 //routes import
 import authRouter from "./routes/authRoute";
+import commonRoute from "./routes/commonRoute";
 
 //routes declaration
+app.use("/api/v1", commonRoute);
 app.use("/api/v1/auth", authRouter);
 
 export { app };
