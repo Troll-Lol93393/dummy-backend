@@ -1,62 +1,77 @@
-import { Model, DataTypes, Sequelize } from "sequelize";
+import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 
-interface UserAttributes {
+export interface UserAttributes {
   id: number;
   firstName: string;
+  middleName?: string;
   lastName: string;
   email: string;
   password: string;
-  role: "ROLE_DEVELOPER" | "ROLE_ADMIN" | "ROLE_USER";
+  uuid: string;
+  role: 'ROLE_DEVELOPER' | 'ROLE_ADMIN' | 'ROLE_USER';
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
 }
 
-export default (sequelize: Sequelize) => {
-  return sequelize.define<Model<UserAttributes>>(
-    "user",
-    {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-      },
-      firstName: {
-        type: DataTypes.STRING,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-      },
-      email: {
-        type: DataTypes.STRING,
-      },
-      password: {
-        type: DataTypes.STRING,
-      },
-      role: {
-        type: DataTypes.ENUM("ROLE_DEVELOPER", "ROLE_ADMIN", "ROLE_USER"),
-      },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-      deletedAt: {
-        allowNull: true,
-        type: DataTypes.DATE,
-      },
+// Optional fields for creation
+export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'uuid'>;
+
+// Sequelize model instance
+export interface UserInstance extends Model<UserAttributes, UserCreationAttributes>, UserAttributes { }
+
+export const UserModelFactory = (sequelize: Sequelize) => {
+  const User = sequelize.define<UserInstance>('user', {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
     },
-    {
-      paranoid: true,
-      timestamps: true,
-      modelName: "user",
-      tableName: "user",
-      schema: "main",
-      freezeTableName: true,
-    }
-  );
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+    },
+    firstName: {
+      type: DataTypes.STRING,
+    },
+    middleName: {
+      type: DataTypes.STRING,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.ENUM('ROLE_DEVELOPER', 'ROLE_ADMIN', 'ROLE_USER'),
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
+    },
+    deletedAt: {
+      allowNull: true,
+      type: DataTypes.DATE,
+    },
+  }, {
+    paranoid: true,
+    timestamps: true,
+    modelName: 'user',
+    tableName: 'user',
+    schema: 'main',
+    freezeTableName: true,
+  });
+
+  return User;
 };

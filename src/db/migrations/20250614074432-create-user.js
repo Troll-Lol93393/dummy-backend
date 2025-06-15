@@ -16,8 +16,18 @@ module.exports = {
           primaryKey: true,
           type: DataTypes.INTEGER,
         },
+        uuid: {
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
+          allowNull: false,
+          primaryKey: true,
+        },
         firstName: {
           type: DataTypes.STRING,
+        },
+        middleName: {
+          type: DataTypes.STRING,
+          allowNull: true,
         },
         lastName: {
           type: DataTypes.STRING,
